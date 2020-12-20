@@ -1,67 +1,105 @@
 const express = require("express");
+const mysql = require("mysql");
+//const mongoose = require("mongoose");
+//const itemModel = require("../models/item");
 
 let router = express.Router();
 
-// Database
-
-let database = [];
-let id = 100;
+// Login databases
+const pool2 = mysql.createPool({
+    connectionLimit: 100,
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "pfpstore"
+});
 
 // Get
-router.get("/shopping", function(req,res) {
-    let tempDatabase = database.filter(item => item.user === req.session.user);
-    return res.status(200).json(tempDatabase);
+router.get("/accounts", function(req,res) {
+//    let query = {"user":req.session.user};
+//    if(req.query.type) {
+//        query["type"] = req.query.type.toLowerCase();
+//    }
+    let sql = "SELECT * FROM ?? JOIN ?? ON ?? = ?";
+    let query = mysql.format(sql,["accounts", "accounts_users", "accounts_users.user_id", req.session.userid]);
+    pool2.query(query, (err, rows) => {
+        if(err) {
+            console.log("Failed to find accounts. Reason:",err);
+            return res.status(500).json({message:"Internal server error"})
+        }
+        console.log("Got something..");
+        return res.status(200).json(accounts);
+    })
 });
+
+/*
+router.get("/shopping", function(req,res) {
+    let query = {"user":req.session.user};
+    if(req.query.type) {
+        query["type"] = req.query.type.toLowerCase();
+    }
+    itemModel.find(query,function(err,items) {
+        if(err) {
+            console.log("Failed to find items. Reason:",err);
+            return res.status(500).json({message:"Internal server error"})
+        }
+        return res.status(200).json(items);
+    })
+});
+*/
 
 // Post
 router.post("/shopping", function(req,res) {
-    let item = {
-        type:req.body.type,
+    let item = new itemModel({
+        type:req.body.type.toLowerCase(),
         price:req.body.price,
         count:req.body.count,
-        id:id,
         user:req.session.user
-    }
-    id++;
-    database.push(item);
-    return res.status(200).json({message:"success!"});
+    })
+    item.save(function(err) {
+        if(err) {
+            console.log("Failed to save item. Reason:",err);
+            return res.status(500).json({message:"Internal server error"})
+        }
+        return res.status(200).json({message:"success!"});
+    })
 });
 
 // Delete
 router.delete("/shopping/:id", function(req,res) {
-    let tempId = parseInt(req.params.id,10);
-    for(let i=0;i<database.length;i++) {
-        if(tempId === database[i].id) {
-            if(database[i].user !== req.session.user) {
-                return res.status(409).json({message:"Conflict. You are not allowed to remove this object!"});
-            }
-            database.splice(i,1);
-            return res.status(200).json({message:"success"})
+    itemModel.deleteOne({"_id":req.params.id,"user":req.session.user}, function(err) {
+        if(err) {
+            console.log("Failed to delete item. Reason:",err);
+            return res.status(500).json({message:"Internal server error"})
         }
-    }
-    return res.status(404).json({message:"not found"})
+        return res.status(200).json({message:"success"})
+    })
 });
 
 // Put
 router.put("/shopping/:id", function(req,res) {
-    let tempId = parseInt(req.params.id,10);
+    if(!req.body) {
+        return res.status(400).json({message:"Bad request"});
+    }
+    if(!req.body.type) {
+        return res.status(400).json({message:"Bad request"});
+    }
     let item = {
-        type:req.body.type,
+        type:req.body.type.toLowerCase(),
         price:req.body.price,
         count:req.body.count,
-        id:tempId,
         user:req.session.user
     };
-    for(let i=0;i<database.length;i++) {
-        if(database[i].id === tempId) {
-            if(database[i].user !== req.session.user) {
-                return res.status(409).json({message:"Conflict. You are not allowed to change this object!"});
-            }
-            database.splice(i, 1, item);
-            return res.status(200).json({message:"success!"});
+    itemModel.replaceOne({"_id":req.params.id,"user":req.session.user},item, function(err,item) {
+        if(err) {
+            console.log("Failed to edit iten. Reason:",err);
+            return res.status(500).json({message:"Internal server error"})
         }
-    }
-    return res.status(404).json({message:"not found!"});
+        if(!item) {
+            return res.status(404).json({message:"not found"})
+        }
+        return res.status(200).json({message:"success"});
+    })
 });
 
 module.exports = router;
