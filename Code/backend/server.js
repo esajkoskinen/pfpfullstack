@@ -18,7 +18,6 @@ const pool = mysql.createPool({
 });
 
 
-let registeredUsers = [];
 let loggedSessions = [];
 const ttl_diff = 3600000;
 // if implementing a switch for 'Keep me logged in', change the session storage to local storage
@@ -66,11 +65,19 @@ app.post("/register", function(req,res) {
     if(req.body.password.length < 8 || req.body.useremail.length < 4) {
         return res.status(400).json({message:"Bad Request"});
     }
-    for(let i=0; i<registeredUsers.length;i++){
-        if(req.body.useremail === registeredUsers[i].useremail) {
+    
+    let sql = "SELECT * FROM ?? WHERE ?? = ?";
+    let query = mysql.format(sql,["users", "email", user.useremail]);
+    pool.query(query, (err, rows) => {
+        if(err) {
+            console.log("Error querying database",err);
+            throw err;
+        }
+        if(rows.length > 0) {
+            console.log("User email is already in use");
             return res.status(409).json({message:"User email is already in use"});
         }
-    }
+    })
     bcrypt.hash(req.body.password,14,function(err,hash) {
         if(err) {
             return res.status(400).json({message:"Bad Request"});
@@ -81,40 +88,27 @@ app.post("/register", function(req,res) {
             password:hash
         }
         
-        let sql = "SELECT * FROM ?? WHERE ?? = ?";
-        let query = mysql.format(sql,["users", "email", user.useremail]);
+        sql = "INSERT INTO ?? (??,??) VALUES (?,?)";
+        query = mysql.format(sql,["users", "email", "password", user.useremail, user.password]);
         pool.query(query, (err, rows) => {
             if(err) {
-                console.log("Error querying database",err);
+                console.log("Error inserting user to database",err);
                 throw err;
             }
-            if(rows.length > 0) {
-                console.log("User email is already in use");
-                return res.status(409).json({message:"User email is already in use"});
-            }
-            sql = "INSERT INTO ?? (??,??) VALUES (?,?)";
-            query = mysql.format(sql,["users", "email", "password", user.useremail, user.password]);
-            pool.query(query, (err, rows) => {
-                if(err) {
-                    console.log("Error inserting user to database",err);
-                    throw err;
-                }
-                return res.status(200).json({message:"success!"});
-            });
+            return res.status(200).json({message:"success!"});
         });
-        
     })
 });
 
 app.post("/login", function(req,res) {
     if(!req.body) {
-        return res.status(400).json({message:"Bad Request"});
+        return res.status(400).json({message:"Bad Request1"});
     }
     if(!req.body.password || !req.body.useremail) {
-        return res.status(400).json({message:"Bad Request"});
+        return res.status(400).json({message:"Bad Request2"});
     }
     if(req.body.password.length < 8 || req.body.useremail.length < 4) {
-        return res.status(400).json({message:"Bad Request"});
+        return res.status(400).json({message:"Bad Request3"});
     }
     
     let sql = "SELECT * FROM ?? WHERE ?? = ?";
@@ -129,7 +123,7 @@ app.post("/login", function(req,res) {
                 bcrypt.compare(req.body.password,rows[0].password,function(err,success) {
                     if(err) {
                         console.log("return 1",err);
-                        return res.status(400).json({message:"Bad Request"});
+                        return res.status(400).json({message:"Bad Request4"});
                     }
                     if(!success) {
                         return res.status(403).json({message:"forbidden"});
@@ -139,6 +133,7 @@ app.post("/login", function(req,res) {
                     let session = {
                         user:req.body.useremail,
                         ttl:now+ttl_diff,
+                        userid:rows[0].id,
                         token:token
                     }
                     loggedSessions.push(session);
