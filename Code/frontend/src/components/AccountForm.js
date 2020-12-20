@@ -1,15 +1,15 @@
 import React from 'react';
 import {Form,Button} from 'semantic-ui-react';
 import {connect} from 'react-redux';
-import {addToList} from '../actions/shoppingActions';
+import {addToAccounts} from '../actions/accountActions';
 
-class ShoppingForm extends React.Component {
+class AccountForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            type:"",
-            count:0,
-            price:0
+            name:"",
+            depository:"",
+            balance:0
         }
     }
     onChange = (event) => {
@@ -21,15 +21,15 @@ class ShoppingForm extends React.Component {
     onSubmit = (event) => {
         event.preventDefault();
         let item = {
-            type:this.state.type,
-            count:this.state.count,
-            price:this.state.price
+            name:this.state.name,
+            depository:this.state.depository,
+            balance:this.state.balance
         };
-        this.props.dispatch(addToList(item,this.props.token));
+        this.props.dispatch(addToAccounts(item,this.props.token));
         this.setState({
-            type:"",
-            count:0,
-            price:0
+            name:"",
+            depository:"",
+            balance:0
         });
     }
     
@@ -38,26 +38,26 @@ class ShoppingForm extends React.Component {
             <div style={{width:500, margin:"auto"}}>
                 <Form onSubmit={this.onSubmit}>
                     <Form.Field>
-                        <label htmlFor="type">Item type:</label>
+                        <label htmlFor="name">Account name:</label>
                         <input type="text"
-                                name="type"
+                                name="name"
                                 onChange={this.onChange}
-                                value={this.state.type} />
+                                value={this.state.name} />
                     </Form.Field>
                     <Form.Field>
-                        <label htmlFor="count">Count:</label>
-                        <input type="number"
-                                name="count"
+                        <label htmlFor="depository">Depository:</label>
+                        <input type="text"
+                                name="depository"
                                 onChange={this.onChange}
-                                value={this.state.count} />
+                                value={this.state.depository} />
                     </Form.Field>
                     <Form.Field>
-                        <label htmlFor="price">Price:</label>
+                        <label htmlFor="balance">Balance:</label>
                         <input type="number"
                                 step="0.01"
-                                name="price"
+                                name="balance"
                                 onChange={this.onChange}
-                                value={this.state.price} />
+                                value={this.state.balance} />
                     </Form.Field>
                     <Button type="submit">Add</Button>
                 </Form>
@@ -72,4 +72,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(ShoppingForm);
+export default connect(mapStateToProps)(AccountForm);

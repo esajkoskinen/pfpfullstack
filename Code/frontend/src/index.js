@@ -5,12 +5,31 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'semantic-ui-css/semantic.min.css';
 import {BrowserRouter} from 'react-router-dom';
+import loginReducer from './reducers/loginReducer';
+import registerReducer from './reducers/registerReducer';
+import accountReducer from './reducers/accountReducer';
+import budgetReducer from './reducers/budgetReducer';
+//import shoppingReducer from './reducers/shoppingReducer';
+import {createStore, applyMiddleware,combineReducers} from 'redux';
+import {Provider} from 'react-redux';
+import thunk from 'redux-thunk';
+
+const rootReducer = combineReducers({
+    login:loginReducer,
+    register:registerReducer,
+    account:accountReducer,
+    budget:budgetReducer
+})
+
+const store = createStore(rootReducer,applyMiddleware(thunk));
 
 ReactDOM.render(
   <React.StrictMode>
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+      <Provider store={store}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+      </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

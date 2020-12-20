@@ -4,9 +4,9 @@ import Row from './Row';
 import RemoveRow from './RemoveRow';
 import EditRow from './EditRow';
 import {connect} from 'react-redux';
-import {getList,removeFromList,editItem} from '../actions/shoppingActions';
+import {getAccounts,removeFromAccounts,editAccount} from '../actions/accountActions';
 
-class ShoppingList extends React.Component {
+class AccountList extends React.Component {
     
     constructor(props) {
         super(props);
@@ -18,7 +18,7 @@ class ShoppingList extends React.Component {
     }
     
     searcByType = (event) => {
-        this.props.dispatch(getList(this.props.token,this.state.search));
+        this.props.dispatch(getAccounts(this.props.token,this.state.search));
         this.setState({
             search:""
         })
@@ -60,17 +60,17 @@ class ShoppingList extends React.Component {
     }
     
     removeFromList = (id) => {
-        this.props.dispatch(removeFromList(id,this.props.token));
+        this.props.dispatch(removeFromAccounts(id,this.props.token));
         this.cancel();
     }
     
     editItem = (item) => {
-        this.props.dispatch(editItem(item,this.props.token));
+        this.props.dispatch(editAccount(item,this.props.token));
         this.cancel();
     }
     
     render() {
-        let items = this.props.list.map((item, index) => {
+        let accounts = this.props.list.map((item, index) => {
             if(index === this.state.removeIndex) {
                 return(<RemoveRow item={item} key={item._id} removeFromList={this.removeFromList} cancel={this.cancel} />)
             }
@@ -92,15 +92,15 @@ class ShoppingList extends React.Component {
                 <Table striped>
                     <Table.Header>
                         <Table.Row>
-                            <Table.HeaderCell>Item type</Table.HeaderCell>
-                            <Table.HeaderCell>Count</Table.HeaderCell>
-                            <Table.HeaderCell>Price</Table.HeaderCell>
+                            <Table.HeaderCell>Name</Table.HeaderCell>
+                            <Table.HeaderCell>Depository</Table.HeaderCell>
+                            <Table.HeaderCell>Balance</Table.HeaderCell>
                             <Table.HeaderCell>Remove</Table.HeaderCell>
                             <Table.HeaderCell>Edit</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {items}
+                        {accounts}
                     </Table.Body>
                 </Table>
             </div>
@@ -111,8 +111,8 @@ class ShoppingList extends React.Component {
 const mapStateToProps = (state) => {
     return {
         token:state.login.token,
-        list:state.shopping.list
+        list:state.account.list
     }
 }
 
-export default connect(mapStateToProps)(ShoppingList);
+export default connect(mapStateToProps)(AccountList);

@@ -8,8 +8,8 @@ export default class Row extends React.Component {
                 <Table.Cell>{this.props.item.type}</Table.Cell>
                 <Table.Cell>{this.props.item.count}</Table.Cell>
                 <Table.Cell>{this.props.item.price}</Table.Cell>
-                <Table.Cell><Button color="red" onClick={() => this.props.handleRemoveButton(this.props.item.id)}>Remove</Button></Table.Cell>
-                <Table.Cell><Button color="green" onClick={() => this.props.handleEditButton(this.props.item.id)}>Edit</Button></Table.Cell>
+                <Table.Cell><Button color="red" onClick={() => this.props.handleRemoveButton(this.props.item._id)}>Remove</Button></Table.Cell>
+                <Table.Cell><Button color="green" onClick={() => this.props.handleEditButton(this.props.item._id)}>Edit</Button></Table.Cell>
             </Table.Row>
         )
     }

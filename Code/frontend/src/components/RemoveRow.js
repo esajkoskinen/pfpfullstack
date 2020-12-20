@@ -9,7 +9,7 @@ export default class RemoveRow extends React.Component {
                 <Table.Cell>{this.props.item.count}</Table.Cell>
                 <Table.Cell>{this.props.item.price}</Table.Cell>
                 <Table.Cell onClick={() => this.props.cancel()}><Button color="grey">Cancel</Button></Table.Cell>
-                <Table.Cell onClick={() => this.props.removeFromList(this.props.item.id)}><Button color="green">Confirm</Button></Table.Cell>
+                <Table.Cell onClick={() => this.props.removeFromList(this.props.item._id)}><Button color="green">Confirm</Button></Table.Cell>
             </Table.Row>
         )
     }
