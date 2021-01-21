@@ -1,4 +1,4 @@
-import {loading,loadingDone,clearLoginState} from './loginActions';
+import {loading,loadingDone,setStage,clearLoginState} from './loginActions';
 
 export const FETCH_ACCOUNTLIST_SUCCESS = "FETCH_ACCOUNTLIST_SUCCESS";
 export const FETCH_ACCOUNTLIST_FAILED =  "FETCH_ACCOUNTLIST_FAILED";
@@ -26,6 +26,7 @@ export const getAccounts = (token,query) => {
         if(query) {
             url = url+"?name="+query
         }
+        dispatch(setStage("Accounts"));
         dispatch(loading());
         fetch(url,request).then(response => {
             dispatch(loadingDone());
@@ -90,7 +91,7 @@ export const removeFromAccounts = (id,token) => {
                     token:token}
         }
         dispatch(loading());
-        fetch("/api/accounts/"+id,request).then(response => {
+        fetch("/api/account/"+id,request).then(response => {
             dispatch(loadingDone());
             if(response.ok) {
                 dispatch(getAccounts(token));
@@ -121,7 +122,7 @@ export const editAccount = (item,token) => {
             body:JSON.stringify(item)
         }
         dispatch(loading());
-        fetch("/api/accounts/"+item._id,request).then(response => {
+        fetch("/api/account/"+item.id,request).then(response => {
             dispatch(loadingDone());
             if(response.ok) {
                 dispatch(getAccounts(token));

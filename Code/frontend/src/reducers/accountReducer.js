@@ -44,17 +44,17 @@ const accountReducer = (state=initialState,action) => {
     let tempLoginState = {};
     switch(action.type) {
         case FETCH_ACCOUNTLIST_SUCCESS:
+            let loginState = getLoginState();
+            tempLoginState = {
+                ...loginState,
+                stage:"Accounts"
+            }
+            saveToLoginStorage(tempLoginState);
             tempState = {
                 list:action.list,
                 error:""
             }
             saveToStorage(tempState);
-            tempLoginState = getLoginState();
-            tempLoginState = {
-                ...state,
-                stage:"accounts"
-            }
-            saveToLoginStorage(tempLoginState);
             return tempState;
         case FETCH_ACCOUNTLIST_FAILED:
             tempState = {

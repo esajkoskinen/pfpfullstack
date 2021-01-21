@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
+import {getAccounts} from '../actions/accountActions';
 
 class Settings extends React.Component {
     render() {
@@ -25,7 +26,7 @@ class Settings extends React.Component {
         }
         return(
             <ul className="menumain" style={mmStyle}>
-                <li style={mmiStyle}><Link to="/accounts" style={lStyle}>Accounts</Link></li>
+                <li style={mmiStyle}><Link to="/accounts" style={lStyle} onClick={() => this.props.dispatch(getAccounts(this.props.token))}>Accounts</Link></li>
             </ul>
         )
     }

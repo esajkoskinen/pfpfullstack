@@ -2,16 +2,16 @@ import React from 'react';
 import {List,Header} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {logout} from '../actions/loginActions';
+import {logout,setStage} from '../actions/loginActions';
 
 class Navbar extends React.Component {
     render() {
+        console.log("Navbar render, stage: '" + this.props.stage + "'");
         let header = <Header>{this.props.stage}</Header>
-//        if(this.props.loading) {
-//            header = <Header>Loading...</Header>
-//        }
+        let actionHdr = <Header>Actions</Header>
         if(this.props.error) {
-            header = <Header>{this.props.error}</Header>
+            //header = <Header>{this.props.error}</Header>
+            console.log("Navbar error: ", this.props.error);
         }
         let navStyle = {
             position:"relative",
@@ -27,14 +27,63 @@ class Navbar extends React.Component {
             lineHeight:2
         }
         if(this.props.isLogged) {
-            return(
-                <div style={navStyle}>
-                    {header}
-                    <List>
-                        <List.Item><Link to="/" onClick={() => this.props.dispatch(logout(this.props.token))} style={linkStyle}>Logout</Link></List.Item>
-                    </List>
-                </div>
-            )
+            if(this.props.stage === "Budgets") {
+                return(
+                    <div style={navStyle}>
+                        {header}
+                        <List>
+                            <List.Item><Link to="/menu" onClick={() => this.props.dispatch(setStage(""))} style={linkStyle}>Main menu</Link></List.Item>
+                            <List.Item><Link to="/" onClick={() => this.props.dispatch(logout(this.props.token))} style={linkStyle}>Logout</Link></List.Item>
+                        </List>
+                    </div>
+                )
+            } else if(this.props.stage === "Settings") {
+                return(
+                    <div style={navStyle}>
+                        {header}
+                        <List>
+                            <List.Item><Link to="/menu" onClick={() => this.props.dispatch(setStage(""))} style={linkStyle}>Main menu</Link></List.Item>
+                            <List.Item><Link to="/" onClick={() => this.props.dispatch(logout(this.props.token))} style={linkStyle}>Logout</Link></List.Item>
+                        </List>
+                    </div>
+                )
+            } else if(this.props.stage === "Accounts") {
+                return(
+                    <div style={navStyle}>
+                        {header}
+                        <List>
+                            <List.Item><Link to="/settings" onClick={() => this.props.dispatch(setStage("Settings"))} style={linkStyle}>Settings</Link></List.Item>
+                            <List.Item><Link to="/menu" onClick={() => this.props.dispatch(setStage(""))} style={linkStyle}>Main menu</Link></List.Item>
+                            <List.Item><Link to="/" onClick={() => this.props.dispatch(logout(this.props.token))} style={linkStyle}>Logout</Link></List.Item>
+                        </List>
+                        {actionHdr}
+                        <List>
+                            <List.Item><Link to="/accountform" onClick={() => this.props.dispatch(setStage("Accountform"))} style={linkStyle}>Add account</Link></List.Item>
+                        </List>
+                    </div>
+                )
+            } else if(this.props.stage === "Accountform") {
+                return(
+                    <div style={navStyle}>
+                        {header}
+                        <List>
+                            <List.Item><Link to="/accounts" onClick={() => this.props.dispatch(setStage("Accounts"))} style={linkStyle}>Accounts</Link></List.Item>
+                            <List.Item><Link to="/settings" onClick={() => this.props.dispatch(setStage("Settings"))} style={linkStyle}>Settings</Link></List.Item>
+                            <List.Item><Link to="/menu" onClick={() => this.props.dispatch(setStage(""))} style={linkStyle}>Main menu</Link></List.Item>
+                            <List.Item><Link to="/" onClick={() => this.props.dispatch(logout(this.props.token))} style={linkStyle}>Logout</Link></List.Item>
+                        </List>
+                    </div>
+                )
+            } else {
+                return(
+                    <div style={navStyle}>
+                        {header}
+                        <List>
+                            <List.Item><Link to="/" onClick={() => this.props.dispatch(logout(this.props.token))} style={linkStyle}>Logout</Link></List.Item>
+                        </List>
+                    </div>
+                )
+            }
         } else {
             return (
                 <div style={navStyle}>

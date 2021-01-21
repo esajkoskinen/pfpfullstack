@@ -1,4 +1,4 @@
-import {loading,loadingDone,clearLoginState} from './loginActions';
+import {loading,loadingDone,setStage,clearLoginState} from './loginActions';
 
 export const FETCH_BUDGETLIST_SUCCESS = "FETCH_BUDGETLIST_SUCCESS";
 export const FETCH_BUDGETLIST_FAILED =  "FETCH_BUDGETLIST_FAILED";
@@ -26,6 +26,7 @@ export const getBudgets = (token,query) => {
         if(query) {
             url = url+"?type="+query
         }
+        dispatch(setStage("Budgets"));
         dispatch(loading());
         fetch(url,request).then(response => {
             dispatch(loadingDone());

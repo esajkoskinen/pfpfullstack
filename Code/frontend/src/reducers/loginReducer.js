@@ -1,6 +1,7 @@
 import {
     LOADING,
     LOADING_DONE,
+    STAGE_SET,
     LOGIN_SUCCESS,
     LOGIN_FAILED,
     LOGOUT_SUCCESS,
@@ -52,6 +53,13 @@ const loginReducer = (state = initialState, action) => {
                 loading:false,
                 error:""
             }
+        case STAGE_SET:
+            tempState = {
+                ...state,
+                stage:action.stage
+            }
+            saveToStorage(tempState);
+            return tempState;
         case LOGIN_SUCCESS:
             tempState = {
                 isLogged:true,

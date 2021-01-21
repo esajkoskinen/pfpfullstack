@@ -1,8 +1,8 @@
 import React from 'react';
 import {Table,Button} from 'semantic-ui-react';
-import Row from './Row';
-import RemoveRow from './RemoveRow';
-import EditRow from './EditRow';
+import AccountRow from './AccountRow';
+import RemoveAccountRow from './RemoveAccountRow';
+import EditAccountRow from './EditAccountRow';
 import {connect} from 'react-redux';
 import {getAccounts,removeFromAccounts,editAccount} from '../actions/accountActions';
 
@@ -17,7 +17,7 @@ class AccountList extends React.Component {
         }
     }
     
-    searcByType = (event) => {
+    searchByType = (event) => {
         this.props.dispatch(getAccounts(this.props.token,this.state.search));
         this.setState({
             search:""
@@ -32,7 +32,7 @@ class AccountList extends React.Component {
     
     handleRemoveButton = (id) => {
         for(let i=0;i<this.props.list.length;i++) {
-            if(id === this.props.list[i]._id) {
+            if(id === this.props.list[i].id) {
                 this.setState({
                     removeIndex:i,
                     editIndex:-1
@@ -43,7 +43,7 @@ class AccountList extends React.Component {
     
     handleEditButton = (id) => {
         for(let i=0;i<this.props.list.length;i++) {
-            if(id === this.props.list[i]._id) {
+            if(id === this.props.list[i].id) {
                 this.setState({
                     removeIndex:-1,
                     editIndex:i
@@ -59,26 +59,26 @@ class AccountList extends React.Component {
         });
     }
     
-    removeFromList = (id) => {
+    removeFromAccounts = (id) => {
         this.props.dispatch(removeFromAccounts(id,this.props.token));
         this.cancel();
     }
     
-    editItem = (item) => {
+    editAccount = (item) => {
         this.props.dispatch(editAccount(item,this.props.token));
         this.cancel();
     }
     
     render() {
-        let accounts = this.props.list.map((item, index) => {
+        let items = this.props.list.map((item, index) => {
             if(index === this.state.removeIndex) {
-                return(<RemoveRow item={item} key={item._id} removeFromList={this.removeFromList} cancel={this.cancel} />)
+                return(<RemoveAccountRow item={item} key={item.id} removeFromAccounts={this.removeFromAccounts} cancel={this.cancel} />)
             }
             if(index === this.state.editIndex) {
-                return(<EditRow item={item} key={item._id} editItem={this.editItem} cancel={this.cancel} />)
+                return(<EditAccountRow item={item} key={item.id} editAccount={this.editAccount} cancel={this.cancel} />)
             }
             return(
-                <Row item={item} key={item._id} handleRemoveButton={this.handleRemoveButton} handleEditButton={this.handleEditButton}/>
+                <AccountRow item={item} key={item.id} handleRemoveButton={this.handleRemoveButton} handleEditButton={this.handleEditButton}/>
             )
         });
         return(
@@ -88,7 +88,7 @@ class AccountList extends React.Component {
                         name="search"
                         onChange={this.onChange}
                         value={this.state.search} />
-                <Button onClick={this.searcByType}>Search</Button>
+                <Button onClick={this.searchByType}>Search</Button>
                 <Table striped>
                     <Table.Header>
                         <Table.Row>
@@ -100,7 +100,7 @@ class AccountList extends React.Component {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {accounts}
+                        {items}
                     </Table.Body>
                 </Table>
             </div>

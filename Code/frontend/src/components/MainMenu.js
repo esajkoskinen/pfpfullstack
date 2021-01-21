@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
+import {setStage} from '../actions/loginActions';
 
 class MainMenu extends React.Component {
     render() {
@@ -25,13 +26,13 @@ class MainMenu extends React.Component {
         }
         return(
             <ul className="menumain" style={mmStyle}>
-                <li style={mmiStyle}><Link to="/budgets" style={lStyle}>Budgets</Link></li>
+                <li style={mmiStyle}><Link to="/budgets" style={lStyle} onClick={() => this.props.dispatch(setStage("Budgets"))}>Budgets</Link></li>
                 <li style={mmiStyle}><Link to="/receipts" style={lStyle}>Receipts</Link></li>
                 <li style={mmiStyle}><Link to="/stores" style={lStyle}>Stores</Link></li>
                 <li style={mmiStyle}><Link to="/products" style={lStyle}>Products</Link></li>
                 <li style={mmiStyle}><Link to="/shoppinglists" style={lStyle}>Shopping lists</Link></li>
                 <li style={mmiStyle}><Link to="/recipes" style={lStyle}>Recipes</Link></li>
-                <li style={mmiStyle}><Link to="/settings" style={lStyle}>Settings</Link></li>
+                <li style={mmiStyle}><Link to="/settings" style={lStyle} onClick={() => this.props.dispatch(setStage("Settings"))}>Settings</Link></li>
             </ul>
         )
     }

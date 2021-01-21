@@ -3,6 +3,7 @@ import {clearBudgetState} from './budgetActions';
 
 export const LOADING = "LOADING"
 export const LOADING_DONE = "LOADING_DONE"
+export const STAGE_SET = "STAGE_SET"
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
 export const LOGIN_FAILED = "LOGIN_FAILED"
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS"
@@ -72,6 +73,14 @@ export const loading = () => {
 export const loadingDone = () => {
     return {
         type:LOADING_DONE
+    }
+}
+
+export const setStage = (stage) => {
+    console.log("LoginActions, setStage: ", stage);
+    return {
+        type:STAGE_SET,
+        stage:stage
     }
 }
 
