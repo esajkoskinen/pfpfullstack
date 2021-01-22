@@ -1,8 +1,8 @@
 import React from 'react';
 import {Table,Button} from 'semantic-ui-react';
-import Row from './Row';
-import RemoveRow from './RemoveRow';
-import EditRow from './EditRow';
+import BudgetRow from './BudgetRow';
+import RemoveBudgetRow from './RemoveBudgetRow';
+import EditBudgetRow from './EditBudgetRow';
 import {connect} from 'react-redux';
 import {getBudgets,removeFromBudgets,editBudget} from '../actions/budgetActions';
 
@@ -17,7 +17,7 @@ class BudgetList extends React.Component {
         }
     }
     
-    searcByType = (event) => {
+    searchByType = (event) => {
         this.props.dispatch(getBudgets(this.props.token,this.state.search));
         this.setState({
             search:""
@@ -32,7 +32,7 @@ class BudgetList extends React.Component {
     
     handleRemoveButton = (id) => {
         for(let i=0;i<this.props.list.length;i++) {
-            if(id === this.props.list[i]._id) {
+            if(id === this.props.list[i].id) {
                 this.setState({
                     removeIndex:i,
                     editIndex:-1
@@ -43,7 +43,7 @@ class BudgetList extends React.Component {
     
     handleEditButton = (id) => {
         for(let i=0;i<this.props.list.length;i++) {
-            if(id === this.props.list[i]._id) {
+            if(id === this.props.list[i].id) {
                 this.setState({
                     removeIndex:-1,
                     editIndex:i
@@ -70,17 +70,20 @@ class BudgetList extends React.Component {
     }
     
     render() {
-        let budgets = this.props.list.map((item, index) => {
-            if(index === this.state.removeIndex) {
-                return(<RemoveRow item={item} key={item._id} removeFromList={this.removeFromList} cancel={this.cancel} />)
-            }
-            if(index === this.state.editIndex) {
-                return(<EditRow item={item} key={item._id} editItem={this.editItem} cancel={this.cancel} />)
-            }
-            return(
-                <Row item={item} key={item._id} handleRemoveButton={this.handleRemoveButton} handleEditButton={this.handleEditButton}/>
-            )
-        });
+        let budgets = "You have no budgets.";
+        if(this.props.list.length > 0) {
+            budgets = this.props.list.map((item, index) => {
+                if(index === this.state.removeIndex) {
+                    return(<RemoveBudgetRow item={item} key={item.id} removeFromList={this.removeFromList} cancel={this.cancel} />)
+                }
+                if(index === this.state.editIndex) {
+                    return(<EditBudgetRow item={item} key={item.id} editItem={this.editItem} cancel={this.cancel} />)
+                }
+                return(
+                    <BudgetRow item={item} key={item.id} handleRemoveButton={this.handleRemoveButton} handleEditButton={this.handleEditButton}/>
+                )
+            });
+        }
         return(
             <div>
                 <label htmlFor="search">Search by type:</label>
@@ -88,7 +91,7 @@ class BudgetList extends React.Component {
                         name="search"
                         onChange={this.onChange}
                         value={this.state.search} />
-                <Button onClick={this.searcByType}>Search</Button>
+                <Button onClick={this.searchByType}>Search</Button>
                 <Table striped>
                     <Table.Header>
                         <Table.Row>

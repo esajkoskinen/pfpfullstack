@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {setStage} from '../actions/loginActions';
+import {getBudgets} from '../actions/budgetActions';
 
 class MainMenu extends React.Component {
     render() {
@@ -26,7 +27,7 @@ class MainMenu extends React.Component {
         }
         return(
             <ul className="menumain" style={mmStyle}>
-                <li style={mmiStyle}><Link to="/budgets" style={lStyle} onClick={() => this.props.dispatch(setStage("Budgets"))}>Budgets</Link></li>
+                <li style={mmiStyle}><Link to="/budgets" style={lStyle} onClick={() => this.props.dispatch(getBudgets(this.props.token))}>Budgets</Link></li>
                 <li style={mmiStyle}><Link to="/receipts" style={lStyle}>Receipts</Link></li>
                 <li style={mmiStyle}><Link to="/stores" style={lStyle}>Stores</Link></li>
                 <li style={mmiStyle}><Link to="/products" style={lStyle}>Products</Link></li>

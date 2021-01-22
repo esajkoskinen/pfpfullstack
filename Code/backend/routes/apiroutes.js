@@ -31,7 +31,7 @@ function checkAccountsUser(userId, accountId, callback) {
     })
 }
 
-// ACCOUNTS
+// ********************* ACCOUNTS ********************* \\
 // Get Accounts for user according to userId
 router.get("/accounts", function(req,res) {
     let sql = "SELECT ??.* FROM ?? INNER JOIN ?? ON ?? = ?? WHERE ?? = ?";
@@ -185,78 +185,20 @@ router.delete("/account/:id", function(req,res) {
     })
 });
 
+// ********************* BUDGETS ********************* \\
 // Get Budgets for user according to userId
 router.get("/budgets", function(req,res) {
-    //let sql = "SELECT ??.* FROM ?? INNER JOIN ?? ON ?? = ?? WHERE ?? = ?";
-    //let query = mysql.format(sql,["budgets","budgets", "accounts_users", "accounts_users.account_id", "accounts.id", "accounts_users.user_id", req.session.user_id]);
-    //pool2.query(query, (err, accounts) => {
-    //    if(err) {
-    //        console.log("Failed to find accounts. Reason:",err);
-    //        return res.status(500).json({message:"Internal server error"})
-    //    }
-    //    return res.status(200).json(accounts);
-    //})
-});
-
-
-/*
-// Post
-router.post("/shopping", function(req,res) {
-    let item = new itemModel({
-        type:req.body.type.toLowerCase(),
-        price:req.body.price,
-        count:req.body.count,
-        user:req.session.user
-    })
-    item.save(function(err) {
+    let sql = "SELECT ??.* FROM ?? INNER JOIN ?? ON ?? = ?? INNER JOIN ?? ON ?? = ?? INNER JOIN ?? ON ?? = ?? WHERE ?? = ?";
+    let query = mysql.format(sql,["budgets", "budgets", "accounts_budgets", "accounts_budgets.budget_id", "budgets.id", "accounts", "accounts.id", "accounts_budgets.account_id", "accounts_users", "accounts_users.account_id", "accounts.id", "accounts_users.user_id", req.session.user_id]);
+    //console.log("About to query budgets");
+    pool2.query(query, (err, budgets) => {
         if(err) {
-            console.log("Failed to save item. Reason:",err);
+            console.log("Failed to find budgets. Reason:",err);
             return res.status(500).json({message:"Internal server error"})
         }
-        return res.status(200).json({message:"success!"});
+        return res.status(200).json(budgets);
     })
 });
-//*/
 
-/*
-// Delete
-router.delete("/shopping/:id", function(req,res) {
-    itemModel.deleteOne({"_id":req.params.id,"user":req.session.user}, function(err) {
-        if(err) {
-            console.log("Failed to delete item. Reason:",err);
-            return res.status(500).json({message:"Internal server error"})
-        }
-        return res.status(200).json({message:"success"})
-    })
-});
-//*/
-
-/*
-// Put
-router.put("/shopping/:id", function(req,res) {
-    if(!req.body) {
-        return res.status(400).json({message:"Bad request"});
-    }
-    if(!req.body.type) {
-        return res.status(400).json({message:"Bad request"});
-    }
-    let item = {
-        type:req.body.type.toLowerCase(),
-        price:req.body.price,
-        count:req.body.count,
-        user:req.session.user
-    };
-    itemModel.replaceOne({"_id":req.params.id,"user":req.session.user},item, function(err,item) {
-        if(err) {
-            console.log("Failed to edit iten. Reason:",err);
-            return res.status(500).json({message:"Internal server error"})
-        }
-        if(!item) {
-            return res.status(404).json({message:"not found"})
-        }
-        return res.status(200).json({message:"success"});
-    })
-});
-//*/
 
 module.exports = router;
